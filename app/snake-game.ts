@@ -50,40 +50,80 @@ export class SnakeGame {
     }
 
     private tick(): void {
+        this.moveSnake();
+        this.gameCanvas.paint(this.snake, this.pill);
+    }
+
+    private moveSnake(): void {
         this.snake.move();
+        this.warpIfSnakeIsPastBoundary();
 
-        if(this.snake.head.x < 0) {
-            this.snake.head.x = this.gameCanvas.boardWidth-1;
-        }
-        if(this.snake.head.x > this.gameCanvas.boardWidth-1) {
-            this.snake.head.x = 0;
-        }
-        if(this.snake.head.y < 0) {
-            this.snake.head.y= this.gameCanvas.boardHeight-1;
-        }
-        if(this.snake.head.y > this.gameCanvas.boardHeight-1) {
-            this.snake.head.y = 0;
+        if(this.snake.hasCrashed()){
+            this.snake.reset(this.startingPosition);
         }
 
-        this.gameCanvas.context.fillStyle="black";
-        this.gameCanvas.context.fillRect(0,0,this.gameCanvas.canvas.width,this.gameCanvas.canvas.height);
+        if(this.snakeFoundThePill()){
+            this.eatThePill();
+        }
+    }
 
-        this.gameCanvas.context.fillStyle="lime";
-        for(var i=0;i<this.snake.trail.length;i++) {
-            this.gameCanvas.context.fillRect(this.snake.trail[i].x*this.spaceSize,this.snake.trail[i].y*this.spaceSize,this.spaceSize-2,this.spaceSize-2);
-            
-            if(this.snake.hasCrashed()){
-                this.snake.reset(this.startingPosition);
-            }
+    private warpIfSnakeIsPastBoundary(): void {
+        if(this.snakeIsPastWestBoundary()) {
+            this.teleportSnakeToEastBoundary();
         }
 
-        if(this.snake.isAt(this.pill.position)) {
-            this.snake.grow();
-            this.pill.reset();
+        if(this.snakeIsPastEastBoundary()) {
+            this.teleportSnakeToWestBoundary();
         }
 
-        this.gameCanvas.context.fillStyle="red";
-        this.gameCanvas.context.fillRect(this.pill.position.x*this.spaceSize,this.pill.position.y*this.spaceSize,this.spaceSize-2,this.spaceSize-2);
+        if(this.snakeIsPastNorthBoundary()) {
+            this.teleportSnakeToSouthBoundary();
+        }
+
+        if(this.snakeIsPastSouthBoundary()) {
+            this.teleportSnakeToNorthBoundary();
+        }
+    }
+
+    private teleportSnakeToNorthBoundary(): void {
+        this.snake.head.y = 0;
+    }
+
+    private teleportSnakeToSouthBoundary(): void {
+        this.snake.head.y= this.gameCanvas.boardHeight-1;
+    }
+
+    private teleportSnakeToWestBoundary(): void {
+        this.snake.head.x = 0;
+    }
+
+    private teleportSnakeToEastBoundary(): void {
+        this.snake.head.x = this.gameCanvas.boardWidth-1;
+    }
+
+    private snakeIsPastWestBoundary(): boolean {
+        return this.snake.head.x < 0;
+    }
+
+    private snakeIsPastEastBoundary(): boolean {
+        return this.snake.head.x > this.gameCanvas.boardWidth-1;
+    }
+
+    private snakeIsPastNorthBoundary(): boolean {
+        return this.snake.head.y < 0;
+    }
+
+    private snakeIsPastSouthBoundary(): boolean {
+        return this.snake.head.y > this.gameCanvas.boardHeight-1;
+    }
+
+    private snakeFoundThePill(): boolean {
+        return this.snake.isAt(this.pill.position);
+    }
+
+    private eatThePill(): void {
+        this.pill.reset();
+        this.snake.grow();
     }
 
     private keyPush(evt: KeyboardEvent): void {
