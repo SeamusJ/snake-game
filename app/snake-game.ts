@@ -9,7 +9,7 @@ export class SnakeGame {
     private pill: Pill;
     private startingPosition: IPosition;
 
-    constructor(private gameCanvas: GameCanvas, private spaceSize: number) {
+    constructor(private gameCanvas: GameCanvas) {
         this.init();
     }
 
