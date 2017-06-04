@@ -5,25 +5,41 @@ import { Pill } from "./pill";
 
 
 export class SnakeGame {
-    private gameCanvas: GameCanvas;
     private snake: Snake;
     private pill: Pill;
     private startingPosition: IPosition;
 
-    constructor(private canvasId: string, private spaceSize: number, w: Window) {
-        this.init(w);
+    constructor(private gameCanvas: GameCanvas, private spaceSize: number) {
+        this.init();
     }
 
-    private init(w: Window) {
-        this.gameCanvas = new GameCanvas(this.canvasId, this.spaceSize);
+    tick(): void {
+        this.moveSnake();
+        this.gameCanvas.paint(this.snake, this.pill);
+    }
 
+    handleKeyPush(evt: KeyboardEvent): void {
+        switch(evt.keyCode) {
+            case 37:
+                this.snake.goWest()
+                break;
+            case 38:
+                this.snake.goNorth();
+                break;
+            case 39:
+                this.snake.goEast();
+                break;
+            case 40:
+                this.snake.goSouth();
+                break;
+        }
+    }
+
+    private init() {
         this.setStartingPosition();
 
         this.createSnake();
         this.createPill();
-
-        this.listenForKeydown(w);
-	    this.startGame(w);
     }
 
     private createPill(): void {
@@ -39,19 +55,6 @@ export class SnakeGame {
             x: Math.floor(this.gameCanvas.boardWidth / 2),
             y: Math.floor(this.gameCanvas.boardHeight / 2)
         };
-    }
-
-    private listenForKeydown(w: Window): void {
-        w.document.addEventListener("keydown",(evt: KeyboardEvent) => this.keyPush(evt));
-    }
-
-    private startGame(w: Window): void {
-        w.setInterval(() => this.tick(),1000/15);
-    }
-
-    private tick(): void {
-        this.moveSnake();
-        this.gameCanvas.paint(this.snake, this.pill);
     }
 
     private moveSnake(): void {
@@ -124,22 +127,5 @@ export class SnakeGame {
     private eatThePill(): void {
         this.pill.reset();
         this.snake.grow();
-    }
-
-    private keyPush(evt: KeyboardEvent): void {
-        switch(evt.keyCode) {
-            case 37:
-                this.snake.goWest()
-                break;
-            case 38:
-                this.snake.goNorth();
-                break;
-            case 39:
-                this.snake.goEast();
-                break;
-            case 40:
-                this.snake.goSouth();
-                break;
-        }
     }
 }

@@ -3,10 +3,10 @@ import { Pill } from "./pill";
 import { IPosition } from "./snake.d";
 
 export class GameCanvas {
-    canvas: HTMLCanvasElement;
-    context: CanvasRenderingContext2D;
     boardHeight: number;
     boardWidth: number;
+    private canvas: HTMLCanvasElement;
+    private context: CanvasRenderingContext2D;
 
     constructor(canvasElementId: string, private spaceSize: number){
         this.canvas = <HTMLCanvasElement>document.getElementById(canvasElementId);
