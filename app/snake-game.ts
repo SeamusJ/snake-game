@@ -17,16 +17,36 @@ export class SnakeGame {
     private init(w: Window) {
         this.gameCanvas = new GameCanvas(this.canvasId, this.spaceSize);
 
+        this.setStartingPosition();
+
+        this.createSnake();
+        this.createPill();
+
+        this.listenForKeydown(w);
+	    this.startGame(w);
+    }
+
+    private createPill(): void {
+        this.pill = new Pill(this.gameCanvas.boardWidth, this.gameCanvas.boardHeight);
+    }
+
+    private createSnake(): void {
+        this.snake = new Snake(this.startingPosition);
+    }
+
+    private setStartingPosition(): void {
         this.startingPosition = {
             x: Math.floor(this.gameCanvas.boardWidth / 2),
             y: Math.floor(this.gameCanvas.boardHeight / 2)
         };
+    }
 
-        this.snake = new Snake(this.startingPosition);
-        this.pill = new Pill(this.gameCanvas.boardWidth, this.gameCanvas.boardHeight);
-
+    private listenForKeydown(w: Window): void {
         w.document.addEventListener("keydown",(evt: KeyboardEvent) => this.keyPush(evt));
-	    w.setInterval(() => this.tick(),1000/15);
+    }
+
+    private startGame(w: Window): void {
+        w.setInterval(() => this.tick(),1000/15);
     }
 
     private tick(): void {

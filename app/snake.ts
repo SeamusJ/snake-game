@@ -46,23 +46,47 @@ export class Snake {
     }
 
     goNorth(): void {
-        this.velocity.xVelocity = 0;
-        this.velocity.yVelocity = -1;
+        if(!this.isGoingSouth()){
+            this.velocity.xVelocity = 0;
+            this.velocity.yVelocity = -1;
+        }
     }
 
     goEast(): void {
-        this.velocity.xVelocity = 1;
-        this.velocity.yVelocity = 0;
+        if(!this.isGoingWest()){
+            this.velocity.xVelocity = 1;
+            this.velocity.yVelocity = 0;
+        }
     }
 
     goSouth(): void {
-        this.velocity.xVelocity = 0;
-        this.velocity.yVelocity = 1;
+        if(!this.isGoingNorth()){
+            this.velocity.xVelocity = 0;
+            this.velocity.yVelocity = 1;
+        }
     }
 
     goWest(): void {
-        this.velocity.xVelocity = -1;
-        this.velocity.yVelocity = 0;
+        if(!this.isGoingEast()){
+            this.velocity.xVelocity = -1;
+            this.velocity.yVelocity = 0;
+        }
+    }
+
+    private isGoingSouth(): boolean {
+        return this.velocity.xVelocity === 0 && this.velocity.yVelocity === 1;
+    }
+
+    private isGoingNorth(): boolean {
+        return this.velocity.xVelocity === 0 && this.velocity.yVelocity === -1;
+    }
+
+    private isGoingEast(): boolean {
+        return this.velocity.xVelocity === 1 && this.velocity.yVelocity === 0;
+    }
+
+    private isGoingWest(): boolean {
+        return this.velocity.xVelocity === -1 && this.velocity.yVelocity === 0;
     }
 
     private init(): void {
