@@ -16,9 +16,13 @@ export class GameCanvas {
         this.boardWidth = Math.floor(this.canvas.width / spaceSize);
     }
 
-    paint(snake: Snake, pill: Pill): void {
+    paint(snakes: Snake[], pill: Pill): void {
         this.paintCanvasBackground();
-        this.paintSnake(snake);
+
+        for(let snake of snakes){
+            this.paintSnake(snake);
+        }
+        
         this.paintPill(pill);
     }
 
@@ -28,7 +32,7 @@ export class GameCanvas {
     }
 
     private paintSnake(snake: Snake): void {
-        this.context.fillStyle="lime";
+        this.context.fillStyle=snake.color;
 
         this.paintSquare(snake.head);
         

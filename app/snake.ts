@@ -8,19 +8,21 @@ export class Snake {
 
     private velocity: IVelocity;
     private length: number;
+    private pendingTurn: Function | null = null;
 
-    constructor(position: IPosition) {
+    constructor(private startingPosition: IPosition, public color: string) {
         this.init();
-        this.reset(position);
+        this.reset();
     }
 
     move(): void {
+        this.processPendingTurn();
         this.updateTrail();
         this.advanceHead();
     }
 
-    hasCrashed(): boolean {
-        for(let segment of this.trail){
+    hasCrashedInto(snake: Snake): boolean {
+        for(let segment of snake.trail){
             if(this.isAt(segment)){
                 return true;
             }
@@ -29,9 +31,9 @@ export class Snake {
         return false;
     }
 
-    reset(position: IPosition){
-        this.head.x = position.x;
-        this.head.y = position.y;
+    reset(){
+        this.head.x = this.startingPosition.x;
+        this.head.y = this.startingPosition.y;
 
         this.length = initialSize;
         this.trail = [];
@@ -46,30 +48,45 @@ export class Snake {
     }
 
     goNorth(): void {
-        if(!this.isGoingSouth()){
-            this.velocity.xVelocity = 0;
-            this.velocity.yVelocity = -1;
+        this.pendingTurn = (): void => {
+            if(!this.isGoingSouth()){
+                this.velocity.xVelocity = 0;
+                this.velocity.yVelocity = -1;
+            }
         }
     }
 
     goEast(): void {
-        if(!this.isGoingWest()){
-            this.velocity.xVelocity = 1;
-            this.velocity.yVelocity = 0;
+        this.pendingTurn = (): void => {
+            if(!this.isGoingWest()){
+                this.velocity.xVelocity = 1;
+                this.velocity.yVelocity = 0;
+            }
         }
     }
 
     goSouth(): void {
-        if(!this.isGoingNorth()){
-            this.velocity.xVelocity = 0;
-            this.velocity.yVelocity = 1;
+        this.pendingTurn = (): void => {
+            if(!this.isGoingNorth()){
+                this.velocity.xVelocity = 0;
+                this.velocity.yVelocity = 1;
+            }
         }
     }
 
     goWest(): void {
-        if(!this.isGoingEast()){
-            this.velocity.xVelocity = -1;
-            this.velocity.yVelocity = 0;
+        this.pendingTurn = (): void => {
+            if(!this.isGoingEast()){
+                this.velocity.xVelocity = -1;
+                this.velocity.yVelocity = 0;
+            }
+        }
+    }
+
+    private processPendingTurn(): void {
+        if(this.pendingTurn !== null){
+            this.pendingTurn();
+            this.pendingTurn = null;
         }
     }
 
