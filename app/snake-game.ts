@@ -3,7 +3,7 @@ import { IPosition } from "./snake.d";
 import { Snake } from "./snake";
 import { Pill } from "./pill";
 
-const colors: string[] = ["lime", "magenta", "white", "lightskyblue", "gold"];
+const colors: string[] = ["lime", "lightskyblue", "white", "gold", "magenta"];
 
 export class SnakeGame {
     private snakes: Snake[];
